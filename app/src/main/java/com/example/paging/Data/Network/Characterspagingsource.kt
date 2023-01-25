@@ -14,14 +14,18 @@ class Characterspagingsource(private val repository: Repository) : PagingSource<
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Characters> {
       return try {
-            val nextpage = params.key ?: 1
-            val character =  repository.getallcharacters(nextpage)
 
-             LoadResult.Page(
-                 data = character,
-                 prevKey = if (nextpage == 1) null else nextpage -1,
-                 nextKey = nextpage.plus(1)
-             )
+          var currentpage = params.key ?: 1
+          var response = repository.getallcharacters(currentpage)
+          val data  = response.body()?.results  ?: emptyList()
+          var responsedata  = mutableListOf<Characters>()
+          responsedata.addAll(data)
+
+          LoadResult.Page(
+              data = responsedata,
+              prevKey = if (currentpage == 1) null else -1,
+              nextKey = currentpage.plus(1)
+          )
 
       } catch (e : Exception){
           LoadResult.Error(e)
