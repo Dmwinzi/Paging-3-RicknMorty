@@ -10,7 +10,7 @@ interface RicknMortApi {
 
 
     @GET("character")
-    suspend fun getallcharacters(@Query("page")page : Int) : List<Characters>
+    suspend fun getallcharacters(@Query("page")page : Int) : Response<PageInfo>
 
 
 
